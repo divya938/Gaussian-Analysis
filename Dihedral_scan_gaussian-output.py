@@ -40,7 +40,7 @@ for j in range(i,len(rline)):
        break
 
 string_to_search=string[2]
-print("Dihedral",string_to_search)
+scan=string[1][0]
 
 # Extracting line number to get optimized structures
 for i in range(len(rline)):
@@ -78,7 +78,6 @@ for i in range(0,len(rline)-1):
                 Energy_line.append(j)
                 break
         for j in range(i,len(rline)-1):
-#            if "! D9    D(2,1,9,10) " in rline[j]:
             if string_to_search in rline[j]:
                 Dihedral_line.append(j)
                 break
@@ -86,7 +85,17 @@ for i in range(0,len(rline)-1):
 # Convert to Energy of the Dihedral scan runs
 energyfileopen.write(' @ title "Dihedral Scan run" \n ')
 energyfileopen.write(' @ subtitle " M06-2x/6-311+g(d,p)" \n ')
-energyfileopen.write(' @ xaxis label "Dihedral Angle (\c0\C)" \n ')
+
+if scan == "D":
+    energyfileopen.write(' @ xaxis label "Dihedral Angle (\c0\C)" \n ')
+    print("Dihedral",string_to_search)
+elif scan == "A":
+    energyfileopen.write(' @ xaxis label "Angle (\c0\C)" \n ')
+    print("Angle",string_to_search)
+else:
+    energyfileopen.write(' @ xaxis label "Bond (\E0\C)" \n ')
+    print("Bond",string_to_search)
+
 energyfileopen.write(' @ yaxis label "Energy (kcal/mol)" \n ')
 energyfileopen.write(' @ TYPE xy \n ')
 energyfileopen.write(' @ view 0.15, 0.15, 1.00, 0.85 \n ')
