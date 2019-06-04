@@ -12,23 +12,14 @@ end = []
 elements = ["", "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr", "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "I", "Xe", "Cs", "Ba", "La", "Ce", "Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb", "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn", "Fe", "Ra", "Ac", "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt", "Ds", "Rg", "Cn", "Uut", "Fl", "Uup", "Lv", "Uus", "Uuo"]
 
 # Receive the Gaussian input file
-#filename = sys.argv[1]
-#
-## cut extension and add xyz
-#xyzfile = os.path.splitext(filename)[0] + ".xyz"
-#energyfile = os.path.splitext(filename)[0] + ".xvg"
-
-# Receive the Gaussian input file
-prefix = sys.argv[1]
+filename = sys.argv[1]
 
 # cut extension and add xyz
-xyzfile = prefix + ".xyz"
-logfile = prefix + ".log"
-energyfile = prefix + ".xvg"
-comfile = prefix + ".com"
+xyzfile = os.path.splitext(filename)[0] + ".xyz"
+energyfile = os.path.splitext(filename)[0] + ".xvg"
+
 # Open the original file in read mode
-openlog = open(logfile,"r")
-opencom = open(comfile,"r")
+openlog = open(filename,"r")
 
 # Create a new file with writing rights
 # overwrites old file!!
@@ -37,6 +28,19 @@ energyfileopen = open(energyfile,"w")
 
 # Read the entire original file
 rline = openlog.readlines()
+
+
+# Identifyting the string
+for i in range(len(rline)):
+    if "Initial Parameters" in rline[i]:
+       break
+for j in range(i,len(rline)):
+    if " Scan " in rline[j]:
+       string=rline[j].split()
+       break
+
+string_to_search=string[2]
+print("Dihedral",string_to_search)
 
 # Extracting line number to get optimized structures
 for i in range(len(rline)):
@@ -74,7 +78,8 @@ for i in range(0,len(rline)-1):
                 Energy_line.append(j)
                 break
         for j in range(i,len(rline)-1):
-            if "! D11   D(6,1,8,9) " in rline[j]:
+#            if "! D9    D(2,1,9,10) " in rline[j]:
+            if string_to_search in rline[j]:
                 Dihedral_line.append(j)
                 break
 
